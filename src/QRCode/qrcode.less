@@ -1,0 +1,36 @@
+.qrcode-wrapper {
+    position: relative;
+    .scan-icon {
+        display: none;
+        height: 80px;
+        position: absolute;
+        z-index: 100;
+        left: 0;
+        right: 0;
+        background: url('./scan-icon.png');
+    }
+    .scan-icon-animation {
+        display: block;
+        animation: scan 2s infinite linear;
+    }
+}
+
+@keyframes scan {
+    0% {
+        top: 20%;
+        opacity: 0;
+    }
+
+    30% {
+        opacity: 0.8;
+    }
+
+    60% {
+        opacity: 0.8;
+    }
+
+    100% {
+        top: 80%;
+        opacity: 0;
+    }
+}

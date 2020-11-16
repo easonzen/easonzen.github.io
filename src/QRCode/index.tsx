@@ -1,6 +1,7 @@
-import React, { useEffect, FC } from 'react';
+import React, { useEffect, FC, useState } from 'react';
 import { isSupport, isMobile, isIOS, isChrome } from './utils';
 import axios from 'axios';
+import './qrcode.less';
 
 interface QRCodeProps {
     onSuccess: (data: string) => void;
@@ -8,6 +9,8 @@ interface QRCodeProps {
 }
 
 const QRCode: FC<QRCodeProps> = ({ onSuccess, onFail }) => {
+    const [canPlay, setCanPlay] = useState(false);
+
     let failTimes = 0;
     let videoStream = null as any;
     const defaultScreenWidth = 375;
@@ -16,7 +19,7 @@ const QRCode: FC<QRCodeProps> = ({ onSuccess, onFail }) => {
     const screenHeight = window.screen.height;
     const videoWidth = isMobile ? screenWidth : defaultScreenWidth;
     const videoHeight = isMobile ? screenHeight : defaultScreenHeight;
-    const videoFacingMode = isMobile ? { exact: 'environment' } : undefined;
+    const videoFacingMode = isMobile ? { exact: 'environment' } : 'user';
 
     async function parseQRCode(img_file_blob: any) {
         // 接口文档地址：https://api.qzone.work/doc/qrdecode.html
@@ -42,7 +45,6 @@ const QRCode: FC<QRCodeProps> = ({ onSuccess, onFail }) => {
 
             onSuccess(resp.data.text);
         } catch (error) {
-            console.log(error.error_msg);
             failTimes += 1;
 
             if (failTimes > 10) {
@@ -94,12 +96,15 @@ const QRCode: FC<QRCodeProps> = ({ onSuccess, onFail }) => {
         video.play();
 
         video.oncanplay = function() {
+            setCanPlay(true);
             // 当摄像头正常工作之后，截取当前屏幕生成图片进行解析。
             readImg();
         };
     }
 
     const destroy = () => {
+        setCanPlay(false);
+
         videoStream &&
             videoStream.getTracks().forEach((track: any) => {
                 track.stop();
@@ -125,11 +130,12 @@ const QRCode: FC<QRCodeProps> = ({ onSuccess, onFail }) => {
     }, []);
 
     return isSupport ? (
-        <>
+        <div className="qrcode-wrapper">
             {/* 需要设置muted静音，否则Safari浏览器下无法自动播放 */}
             <video id="camera" loop muted />
             <canvas id="qrcode-canvas" style={{ display: 'none' }} />
-        </>
+            <div className={`scan-icon ${canPlay ? 'scan-icon-animation' : ''}`} style={{ width: videoWidth }} />
+        </div>
     ) : (
         _renderNotSupport()
     );
