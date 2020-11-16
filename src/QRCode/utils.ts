@@ -1,25 +1,9 @@
-export const isSupport = () => {
-    if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
-        return true;
-    }
+const ua = navigator.userAgent;
 
-    return false;
-};
+export const isSupport = 'mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices ? true : false;
 
-export const isMobile = () => {
-    const ua = navigator.userAgent;
+export const isMobile = ua.match(/AppleWebKit.*Mobile.*/);
 
-    return ua.match(/AppleWebKit.*Mobile.*/);
-};
+export const isIOS = ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
 
-export const isIOS = () => {
-    const ua = navigator.userAgent;
-
-    return ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
-};
-
-export const isChrome = () => {
-    const ua = navigator.userAgent;
-
-    return ua.indexOf('Chrome');
-};
+export const isChrome = ua.indexOf('Chrome');
