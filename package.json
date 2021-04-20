@@ -39,5 +39,8 @@
     "lint-staged": "^10.0.7",
     "prettier": "^1.19.1",
     "yorkie": "^2.0.0"
+  },
+  "dependencies": {
+    "axios": "^0.21.1"
   }
 }
